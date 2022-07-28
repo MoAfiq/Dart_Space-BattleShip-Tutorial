@@ -1,5 +1,6 @@
 /*
   Spaceship Battle Game
+  Afiq Salleh
 */
 import 'dart:math';
 
@@ -25,34 +26,22 @@ class ArmoredSpaceShip extends Spaceship {
     Random randomPercentage = new Random();
     int armorShield = randomPercentage.nextInt(40);
     health = health  + armorShield - enemyPower;
-    print("${name} is attacked by damage of ${enemyPower}");
-    print("Damage is taken");
-    print("Current Health: ${health}");
+    print("${name} is attacked.");
+    print("Damage taken: ${enemyPower - armorShield}");
+    print("$name Current Health: ${health}");
 
     isDestroyed();
   }
 
   @override
   void isDestroyed() {
-    if(health! <= 0) {
-      print("\n\nThe armored ship, ${name} is detroyed");
-      print("The high speed ship, ${name}")
+    if(health <= 0) {
+      print("\nThe armored ship, $name is detroyed and lost.");
+      print("The high speed spaceship won!!!");
     } else {
-      print("The armored ship remaining health: ${health}\n\n");
+      print("\n");
     }
   }
-
-//Calculate the actual hit
-// int armoredHealth = 200;
-// int currentHealth = armoredHealth + actualArmorShield - randomFirePower;
-// int health = health - randomFirePower + actualArmorShield;
-
-//Randomly absorbs hit
-// int determineArmor(int actualArmorShield) {
-//   Random armorShield = new Random();
-//   int actualArmorShield = armorShield.nextInt(40) + 0;
-//   return actualArmorShield;
-// }
 }
 
 class HighSpeedSpaceShip extends Spaceship {
@@ -60,48 +49,63 @@ class HighSpeedSpaceShip extends Spaceship {
   var name;
   var firePower;
 
-  HighSpeedSpaceShip({required this.name, required this.health, required this.firePower}) : super("name", health, firePower);
+  HighSpeedSpaceShip(
+      {required this.name, required this.health, required this.firePower})
+      : super("name", health, firePower);
 
   //Whether dodges hit or not
   // bool dodging;
   @override
   void hit(double enemyPower) {
-    Random random = new Random();
-    bool dodging = random.nextBool();
+    bool dodging = Random().nextBool();
 
     if (dodging == true) {
       health = health - enemyPower;
-      print("${name} is attacked by damage of ${enemyPower}");
-      print("Current Health: ${health}");
+      print("$name is attacked.");
+      print("Damage taken: $enemyPower");
+      print("$name Current Health: $health");
     }
     isDestroyed();
   }
 
   @override
-  void isDestroyed() {}
-  if (health)
-}
-
-class BattleField {
-  void startBattle(Spaceship sp1, Spaceship sp2) {
-    //Randomly a space ship is selected to hit first. Space hit the target. Until one of them is destroyed
-
-
-    //Decide who hit first
-    void whoHitFirst(bool hitting) {
-      Random random = new Random();
-      bool hitting = random.nextBool();
-      //
+  void isDestroyed() {
+    if (health <= 0) {
+      print("\nThe high speed ship, ${name} is detroyed and lost.");
+      print("The armored spaceship won!!!");
+    } else {
+      print("\n");
     }
-
   }
 }
 
-main() {
+class BattleField {
+  void startBattle(Spaceship sp1, Spaceship sp2) async {
+    //Randomly a space ship is selected to hit first. Space hit the target. Until one of them is destroyed
+
+    while (sp1.health > 0 && sp2.health > 0) {
+      await Future.delayed(Duration(seconds: 2), () {
+        Random random = new Random();
+        bool whoStartFirst = random.nextBool();
+        //Decide who hit first
+        if (whoStartFirst == true) {
+          sp1.hit(sp2.firePower);
+        } else {
+          sp2.hit(sp1.firePower);
+        }
+      });
+    }
+  }
+}
+
+
+//Main Body
+void main() {
   print("Bettleship Game");
-  Random random = new Random();
-  bool ball = random.nextBool();
-  print(ball);
+  ArmoredSpaceShip ship1 = ArmoredSpaceShip(name: "Gamuda", health: 1000.0, firePower: 50.0);
+  HighSpeedSpaceShip ship2 = HighSpeedSpaceShip(name: "HMS Malaya", health: 200.0, firePower: 250.0);
+
+  BattleField().startBattle(ship1, ship2);
 
 }
 
