@@ -91,6 +91,7 @@ class BattleField {
     void whoHitFirst(bool hitting) {
       Random random = new Random();
       bool hitting = random.nextBool();
+      //
     }
 
   }
